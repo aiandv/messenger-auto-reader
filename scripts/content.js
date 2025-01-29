@@ -1,5 +1,14 @@
-const lastMessageMap = new Map();
+// Mutation observer
+let obeserver;
+let targetNode;
+const config = {
+  attributes: true,
+  childList: true,
+  subtree: true,
+  characterData: true,
+};
 
+const lastMessageMap = new Map();
 const topChatXpath = "(//div[@aria-label='Chats']//a[@aria-current])[1]";
 const baseXpath = `${topChatXpath}//span[@dir='auto'])`;
 
@@ -49,8 +58,8 @@ const callback = (mutationList, observer) => {
   }
 };
 
-const startObserver = () => {
-  const targetNode = document.evaluate(
+const setupObserver = () => {
+  targetNode = document.evaluate(
     topChatXpath,
     document,
     null,
@@ -58,20 +67,55 @@ const startObserver = () => {
     null
   ).singleNodeValue;
 
-  const config = {
-    attributes: true,
-    childList: true,
-    subtree: true,
-    characterData: true,
-  };
-  const obeserver = new MutationObserver(getChat);
+  obeserver = new MutationObserver(getChat);
+};
+
+const startObserver = () => {
   console.log(`Starting observer...`);
   obeserver.observe(targetNode, config);
 };
 
-const main = () => {
+const stopObserver = () => {
+  console.log(`Stopping observer...`);
+  obeserver.stopObserver();
+};
+
+const startObs = () => {
   getChat(null, null);
+  setupObserver();
   startObserver();
 };
 
-setTimeout(main, 6000);
+(() => {
+  // TODO: Change content injection way
+  console.log(`****** Setting listener ******`);
+  chrome.runtime.onMessage.addListener(function (
+    request,
+    sender,
+    sendResponse
+  ) {
+    console.log(`****** Received a message ******`);
+    config.dir(request);
+    if (request.status === "enabled") {
+      startObs();
+    } else {
+      stopObserver();
+    }
+
+    sendResponse();
+  });
+})();
+
+// function handleMessages(message, sender, sendResponse) {
+//   console.log(`****** Received a message ******`);
+//   config.dir(request);
+//   if (request.status === "enabled") {
+//     startObserver();
+//   } else {
+//     stopObserver();
+//   }
+
+//   sendResponse();
+// }
+
+// setTimeout(main, 6000);
