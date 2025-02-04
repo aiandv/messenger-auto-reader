@@ -59,6 +59,7 @@ const callback = (mutationList, observer) => {
 };
 
 const setupObserver = () => {
+  console.log(`Setting up obeserver...`);
   targetNode = document.evaluate(
     topChatXpath,
     document,
@@ -77,7 +78,7 @@ const startObserver = () => {
 
 const stopObserver = () => {
   console.log(`Stopping observer...`);
-  obeserver.stopObserver();
+  obeserver.disconnect();
 };
 
 const startObs = () => {
@@ -87,12 +88,11 @@ const startObs = () => {
 };
 
 (() => {
-  // TODO: Change content injection way
   console.log(`****** Setting listener ******`);
   chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
       console.log(`****** Received a message ******`);
-      config.dir(request);
+      console.dir(request);
       if (request.status === 'enabled') {
         startObs();
       } else {
@@ -103,17 +103,3 @@ const startObs = () => {
     }
   );
 })();
-
-// function handleMessages(message, sender, sendResponse) {
-//   console.log(`****** Received a message ******`);
-//   config.dir(request);
-//   if (request.status === "enabled") {
-//     startObserver();
-//   } else {
-//     stopObserver();
-//   }
-
-//   sendResponse();
-// }
-
-// setTimeout(main, 6000);

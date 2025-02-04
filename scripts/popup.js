@@ -3,16 +3,20 @@ const main = () => {
 
   async function sendM(message) {
     console.log('SENDING MESSAGE');
-    const response = await chrome.runtime.sendMessage(message);
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      lastFocusedWindow: true,
+    });
+    const response = await chrome.tabs.sendMessage(tab.id, message);
   }
 
   $('#mainCheckbox').change(function () {
     let status;
     if ($(this).is(':checked')) {
-      console.log('CHECKED1');
+      console.log('CHECKED');
       status = 'enabled';
     } else {
-      console.log('UNCHECKED1');
+      console.log('UNCHECKED');
       status = 'disabled';
     }
 

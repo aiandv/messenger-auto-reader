@@ -3,15 +3,14 @@
   "name": "Messenger Auto Reader",
   "version": "1.0",
   "description": "Automatically read new Facebook Messenger chats without openning the message.",
+  "permissions": ["activeTab"],
   "action": {
     "default_popup": "popup.html"
   },
   "content_scripts": [
     {
       "js": ["scripts/content.js"],
-      "matches" : [
-          "https://www.messenger.com/*"
-      ]
+      "matches": ["https://www.messenger.com/*"]
     }
   ]
 }
