@@ -13,7 +13,7 @@ const topChatXpath = "(//div[@aria-label='Chats']//a[@aria-current])[1]";
 const baseXpath = `${topChatXpath}//span[@dir='auto'])`;
 
 const getChat = (mutationList, obeserver) => {
-  console.log("TRIGGERED");
+  console.log('TRIGGERED');
   const baseXpath =
     "((//div[@aria-label='Chats']//a[@aria-current])[1]//span[@dir='auto'])";
 
@@ -44,15 +44,15 @@ const getChat = (mutationList, obeserver) => {
 
   console.log(`From: ${from}`);
   console.log(message);
-  console.log("-----");
+  console.log('-----');
 };
 
 const callback = (mutationList, observer) => {
   console.log(`In callback()`);
   for (const mutation of mutationList) {
-    if (mutation.type === "childList") {
-      console.log("A child node has been added or removed.");
-    } else if (mutation.type === "attributes") {
+    if (mutation.type === 'childList') {
+      console.log('A child node has been added or removed.');
+    } else if (mutation.type === 'attributes') {
       console.log(`The ${mutation.attributeName} attribute was modified.`);
     }
   }
@@ -89,21 +89,19 @@ const startObs = () => {
 (() => {
   // TODO: Change content injection way
   console.log(`****** Setting listener ******`);
-  chrome.runtime.onMessage.addListener(function (
-    request,
-    sender,
-    sendResponse
-  ) {
-    console.log(`****** Received a message ******`);
-    config.dir(request);
-    if (request.status === "enabled") {
-      startObs();
-    } else {
-      stopObserver();
-    }
+  chrome.runtime.onMessage.addListener(
+    function (request, sender, sendResponse) {
+      console.log(`****** Received a message ******`);
+      config.dir(request);
+      if (request.status === 'enabled') {
+        startObs();
+      } else {
+        stopObserver();
+      }
 
-    sendResponse();
-  });
+      sendResponse();
+    }
+  );
 })();
 
 // function handleMessages(message, sender, sendResponse) {
