@@ -9,17 +9,15 @@ const config = {
 };
 
 const lastMessageMap = new Map();
-const topChatXpath = "(//div[@aria-label='Chats']//a[@aria-current])[1]";
-const baseXpath = `${topChatXpath}//span[@dir='auto'])`;
+// const topChatXpath = "(//div[@aria-label='Chats']//a[@aria-current])[1]";
+const baseXpath = `((//div[@aria-label='Chats']//a[@aria-current])[1]//span[@dir='auto'])`;
+const messageXpath = `${baseXpath}[2]`;
 
 const getChat = (mutationList, obeserver) => {
+  // TODO: Check why this log is triggered when there is a change of sender but can't log the chat
   console.log('TRIGGERED');
-  const baseXpath =
-    "((//div[@aria-label='Chats']//a[@aria-current])[1]//span[@dir='auto'])";
 
   const fromXpath = `${baseXpath}[1]`;
-  const messageXpath = `${baseXpath}[2]`;
-
   const from = document.evaluate(
     fromXpath,
     document,
@@ -47,21 +45,10 @@ const getChat = (mutationList, obeserver) => {
   console.log('-----');
 };
 
-const callback = (mutationList, observer) => {
-  console.log(`In callback()`);
-  for (const mutation of mutationList) {
-    if (mutation.type === 'childList') {
-      console.log('A child node has been added or removed.');
-    } else if (mutation.type === 'attributes') {
-      console.log(`The ${mutation.attributeName} attribute was modified.`);
-    }
-  }
-};
-
 const setupObserver = () => {
   console.log(`Setting up obeserver...`);
   targetNode = document.evaluate(
-    topChatXpath,
+    messageXpath,
     document,
     null,
     XPathResult.FIRST_ORDERED_NODE_TYPE,
